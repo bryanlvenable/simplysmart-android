@@ -6,11 +6,11 @@ android {
     buildToolsVersion '25.0.2'
 
     defaultConfig {
-        applicationId 'io.particle.android.app'
+        applicationId 'com.simplysmarttechnologies.app'
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 35
-        versionName "1.7.0"
+        versionName "0.0.1"
     }
 
     dexOptions {
