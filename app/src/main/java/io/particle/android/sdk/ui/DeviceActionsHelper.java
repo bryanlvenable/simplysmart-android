@@ -42,6 +42,9 @@ public class DeviceActionsHelper {
             case R.id.action_device_unclaim:
                 UnclaimHelper.unclaimDeviceWithDialog(activity, device);
                 return true;
+            case R.id.action_device_toggle:
+                SnapLightHelper.toggleDevice(activity, device);
+                return true;
 
             case R.id.action_device_flash_tinker:
                 if (device.getDeviceType() == ParticleDevice.ParticleDeviceType.CORE) {

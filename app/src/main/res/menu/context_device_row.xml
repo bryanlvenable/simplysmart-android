@@ -19,5 +19,8 @@
     <item
         android:id="@id/action_device_unclaim"
         android:title="Unclaim"/>
+    <item
+        android:id="@+id/action_device_toggle"
+        android:title="Toggle"/>
 
 </menu>

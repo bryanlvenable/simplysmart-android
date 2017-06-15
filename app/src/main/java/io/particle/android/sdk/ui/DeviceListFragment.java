@@ -34,6 +34,7 @@ import com.getbase.floatingactionbutton.AddFloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.tumblr.bookends.Bookends;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,6 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.particle.android.sdk.DevicesLoader;
 import io.particle.android.sdk.DevicesLoader.DevicesLoadResult;
+import io.particle.android.sdk.cloud.ParticleCloudException;
 import io.particle.android.sdk.cloud.ParticleDevice;
 import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary;
 import io.particle.android.sdk.devicesetup.ParticleDeviceSetupLibrary.DeviceSetupCompleteReceiver;
