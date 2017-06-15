@@ -245,15 +245,16 @@ public class DeviceListFragment extends Fragment
                     .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss())
                     .show();
 
-        } else if (!device.isRunningTinker()) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Device not running Tinker")
-                    .setMessage("This device is not running Tinker firmware.")
-                    .setPositiveButton("Re-flash Tinker", (dialog, which) -> DeviceActionsHelper.takeActionForDevice(
-                            R.id.action_device_flash_tinker, getActivity(), device))
-                    .setNeutralButton("Tinker anyway", (dialog, which) -> callbacks.onDeviceSelected(device))
-                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
-                    .show();
+        } else if (!device.isRunningTinker()) { // TODO change this to device.isRunningSnapLight()
+            DeviceActionsHelper.takeActionForDevice(R.id.action_device_toggle, getActivity(), device);
+//            new AlertDialog.Builder(getActivity())
+//                    .setTitle("Device not running Tinker")
+//                    .setMessage("This device is not running Tinker firmware.")
+//                    .setPositiveButton("Re-flash Tinker", (dialog, which) -> DeviceActionsHelper.takeActionForDevice(
+//                            R.id.action_device_flash_tinker, getActivity(), device))
+//                    .setNeutralButton("Tinker anyway", (dialog, which) -> callbacks.onDeviceSelected(device))
+//                    .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+//                    .show();
 
         } else {
             callbacks.onDeviceSelected(device);

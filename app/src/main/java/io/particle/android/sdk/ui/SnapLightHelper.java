@@ -22,21 +22,7 @@ import static io.particle.android.sdk.utils.Py.list;
 public class SnapLightHelper {
 
    public static void toggleDevice(final FragmentActivity activity, final ParticleDevice device) {
-       new AlertDialog.Builder(activity)
-               .setMessage(R.string.unclaim_device_dialog_content)
-               .setPositiveButton(R.string.unclaim, new OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-                       toggle(activity, device);
-                   }
-               })
-               .setNegativeButton(R.string.cancel, new OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialog, int which) {
-                       dialog.dismiss();
-                   }
-               })
-               .show();
+       toggle(activity, device);
    }
 
     private static void toggle(final Activity activity, final ParticleDevice device) {
