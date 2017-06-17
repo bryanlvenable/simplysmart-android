@@ -3,4 +3,9 @@
 
     <string name="electron_setup_uri">https://setup.particle.io</string>
 
+    <!-- Organization setup -->
+    <string name="oauth_client_id">snaplight-3594</string>
+    <string name="oauth_client_secret">b2201195d8989fc65b8fc8f05917e6d53d5c71a6</string>
+    <bool name="productMode">true</bool>
+    <integer name="product_id">4688</integer>
 </resources>
