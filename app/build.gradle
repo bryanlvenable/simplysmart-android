@@ -9,7 +9,7 @@ android {
         applicationId 'com.simplysmarttechnologies.app'
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 35
+        versionCode 36
         versionName "0.0.1"
     }
 
