@@ -152,10 +152,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.particle.android.sdk.ui.DeviceListActivity"/>
         </activity>
-        <activity
-            android:name="io.particle.android.sdk.ui.barcode_scanner.BarcodeScannerActivity"
-            android:label="@string/title_activity_barcode_scanner">
-        </activity>
     </application>
 
 </manifest>
