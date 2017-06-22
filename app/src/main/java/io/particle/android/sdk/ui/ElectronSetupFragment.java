@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 
 import io.particle.android.sdk.cloud.ParticleCloudSDK;
-import io.particle.android.sdk.ui.barcode_scanner.BarcodeScannerActivity;
 import io.particle.android.sdk.utils.TLog;
 import io.particle.android.sdk.utils.ui.Toaster;
 import io.particle.android.sdk.utils.ui.Ui;
@@ -94,11 +93,7 @@ public class ElectronSetupFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_SCAN_ICCID) {
             if (resultCode == CommonStatusCodes.SUCCESS && data != null) {
-                    Barcode barcode = data.getParcelableExtra(BarcodeScannerActivity.EXTRA_BARCODE);
-
-                    log.d("Barcode read: " + barcode.displayValue);
-
-                    this.onBarcodeScanningFinished(barcode.displayValue);
+                Toaster.s(this, "This feature does not exist.");
             } else {
                 Toaster.s(this, "No barcode scanned.");
             }
@@ -170,9 +165,9 @@ public class ElectronSetupFragment extends Fragment {
     }
 
     private void doElectronSetupScanICCID() {
-        startActivityForResult(
-                new Intent(getActivity(), BarcodeScannerActivity.class),
-                REQUEST_CODE_SCAN_ICCID);
+//        startActivityForResult(
+//                new Intent(getActivity(), BarcodeScannerActivity.class),
+//                REQUEST_CODE_SCAN_ICCID);
     }
 
     private void doElectronSetupScanCreditCard() {
