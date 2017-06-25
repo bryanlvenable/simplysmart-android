@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="brand_name">SimplySmart</string>
+    <string name="app_name">@string/brand_name</string>
+    <string name="device_name">SnapLight</string>
+    <drawable name="device_image">@drawable/photon_vector</drawable>
+    <drawable name="device_image_small">@drawable/photon_vector_small</drawable>
+    <drawable name="brand_image_horizontal">@drawable/particle_horizontal_blue</drawable>
+    <drawable name="brand_image_vertical">@drawable/particle_vertical_blue</drawable>
+    <drawable name="screen_background">@drawable/trianglifybackground</drawable>
+    <color name="brand_image_background_color">#641A1A1A</color>
+
     <string name="tinker_instructions"><![CDATA[Welcome to Tinker!\n\n
 Tinker is the fastest and easiest way to prototype and play with your Photon.\n\n
 You can access the basic input/output functions of the Photon without writing a line of code.\n\n
