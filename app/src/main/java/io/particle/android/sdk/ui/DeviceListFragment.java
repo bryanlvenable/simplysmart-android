@@ -137,19 +137,9 @@ public class DeviceListFragment extends Fragment
 
         fabMenu = Ui.findView(view, R.id.add_device_fab);
         AddFloatingActionButton addPhoton = Ui.findView(view, R.id.action_set_up_a_photon);
-        AddFloatingActionButton addCore = Ui.findView(view, R.id.action_set_up_a_core);
-        AddFloatingActionButton addElectron = Ui.findView(view, R.id.action_set_up_an_electron);
 
         addPhoton.setOnClickListener(v -> {
             addPhotonDevice();
-            fabMenu.collapse();
-        });
-        addCore.setOnClickListener(v -> {
-            addSparkCoreDevice();
-            fabMenu.collapse();
-        });
-        addElectron.setOnClickListener(v -> {
-            addElectronDevice();
             fabMenu.collapse();
         });
 

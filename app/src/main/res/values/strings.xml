@@ -3,7 +3,7 @@
 
     <string name="brand_name">SimplySmart</string>
     <string name="app_name">@string/brand_name</string>
-    <string name="device_name">SnapLight</string>
+    <!--<string name="device_name">SnapLight</string>-->
     <drawable name="device_image">@drawable/photon_vector</drawable>
     <drawable name="device_image_small">@drawable/photon_vector_small</drawable>
     <drawable name="brand_image_horizontal">@drawable/particle_horizontal_blue</drawable>
