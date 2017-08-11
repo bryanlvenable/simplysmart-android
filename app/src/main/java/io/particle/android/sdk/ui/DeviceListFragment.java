@@ -423,8 +423,8 @@ public class DeviceListFragment extends Fragment
                     msg = "Online";
 
                 } else {
-                    dot = R.drawable.online_non_tinker_dot;
-                    msg = "Online, non-Tinker";
+                    dot = R.drawable.online_dot;
+                    msg = "Online";
                 }
 
             } else {
