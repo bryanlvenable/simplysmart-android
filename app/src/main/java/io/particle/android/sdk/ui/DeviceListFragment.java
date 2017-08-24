@@ -295,21 +295,21 @@ public class DeviceListFragment extends Fragment
         static class ViewHolder extends RecyclerView.ViewHolder {
 
             final View topLevel;
-            final TextView modelName;
+//            final TextView modelName;
             final ImageView productImage;
             final TextView deviceName;
             final TextView statusTextWithIcon;
-            final TextView productId;
+//            final TextView productId;
             final ImageView overflowMenuIcon;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 topLevel = itemView;
-                modelName = Ui.findView(itemView, R.id.product_model_name);
+//                modelName = Ui.findView(itemView, R.id.product_model_name);
                 productImage = Ui.findView(itemView, R.id.product_image);
                 deviceName = Ui.findView(itemView, R.id.product_name);
                 statusTextWithIcon = Ui.findView(itemView, R.id.online_status);
-                productId = Ui.findView(itemView, R.id.product_id);
+//                productId = Ui.findView(itemView, R.id.product_id);
                 overflowMenuIcon = Ui.findView(itemView, R.id.context_menu);
             }
         }
@@ -350,20 +350,20 @@ public class DeviceListFragment extends Fragment
             }
 
             switch (device.getDeviceType()) {
-                case CORE:
-                    holder.modelName.setText("Core");
-                    holder.productImage.setImageResource(R.drawable.core_vector);
-                    break;
-
-                case ELECTRON:
-                    holder.modelName.setText("Electron");
-                    holder.productImage.setImageResource(R.drawable.electron_vector_small);
-                    break;
-
-                default:
-                    holder.modelName.setText("Photon");
-                    holder.productImage.setImageResource(R.drawable.photon_vector_small);
-                    break;
+//                case CORE:
+//                    holder.modelName.setText("Core");
+//                    holder.productImage.setImageResource(R.drawable.core_vector);
+//                    break;
+//
+//                case ELECTRON:
+//                    holder.modelName.setText("Electron");
+//                    holder.productImage.setImageResource(R.drawable.electron_vector_small);
+//                    break;
+//
+//                default:
+//                    holder.modelName.setText("Photon");
+//                    holder.productImage.setImageResource(R.drawable.photon_vector_small);
+//                    break;
             }
 
             Pair<String, Integer> statusTextAndColoredDot = getStatusTextAndColoredDot(device);
@@ -371,7 +371,7 @@ public class DeviceListFragment extends Fragment
             holder.statusTextWithIcon.setCompoundDrawablesWithIntrinsicBounds(
                     0, 0, statusTextAndColoredDot.second, 0);
 
-            holder.productId.setText(device.getID().toUpperCase());
+//            holder.productId.setText(device.getID().toUpperCase());
 
             Context ctx = holder.topLevel.getContext();
             String name = truthy(device.getName())

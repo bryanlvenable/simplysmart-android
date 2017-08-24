@@ -18,38 +18,39 @@
         android:scaleType="centerInside"
         android:src="@drawable/device_image_small"/>
 
-    <TextView
-        android:id="@+id/product_model_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/product_image"
-        android:paddingTop="3dp"
-        android:text="Model name"
-        android:textSize="@dimen/material_text_size_caption"/>
+    <!--<TextView-->
+        <!--android:id="@+id/product_model_name"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_toRightOf="@id/product_image"-->
+        <!--android:paddingTop="3dp"-->
+        <!--android:text="Model name"-->
+        <!--android:textSize="@dimen/material_text_size_caption"/>-->
 
     <TextView
-        android:id="@+id/product_name"
-        fontPath="@string/bold_text_font_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/product_model_name"
-        android:layout_toRightOf="@id/product_image"
+    android:id="@+id/product_name"
+    fontPath="@string/bold_text_font_name"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
         android:text="DEVICE_NAME"
-        android:textSize="@dimen/material_text_size_subhead"
-        tools:ignore="MissingPrefix"/>
+    android:textSize="@dimen/material_text_size_subhead"
+    tools:ignore="MissingPrefix"
+        android:layout_alignTop="@+id/online_status"
+        android:layout_toRightOf="@+id/product_image"
+        android:layout_toEndOf="@+id/product_image" />
 
-    <TextView
-        android:id="@+id/product_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/product_model_name"
-        android:layout_marginTop="3dp"
-        android:layout_toRightOf="@id/product_image"
-        android:text="deadbeefcafedad"
-        android:textSize="@dimen/material_text_size_caption"
-        android:typeface="monospace"/>
+    <!--<TextView-->
+    <!--android:id="@+id/product_id"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_below="@+id/product_model_name"-->
+        <!--android:layout_marginTop="3dp"-->
+        <!--android:layout_toRightOf="@id/product_image"-->
+        <!--android:text="deadbeefcafedad"-->
+        <!--android:textSize="@dimen/material_text_size_caption"-->
+        <!--android:typeface="monospace"/>-->
 
     <ImageView
         android:id="@+id/context_menu"
