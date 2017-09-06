@@ -10,14 +10,6 @@ import io.particle.android.sdk.cloud.ParticleCloud;
 import io.particle.android.sdk.utils.ui.Ui;
 import io.particle.sdk.app.R;
 
-import io.particle.android.sdk.utils.IabBroadcastReceiver;
-import io.particle.android.sdk.utils.IabBroadcastReceiver.IabBroadcastListener;
-import io.particle.android.sdk.utils.IabHelper;
-import io.particle.android.sdk.utils.IabHelper.IabAsyncInProgressException;
-import io.particle.android.sdk.utils.IabResult;
-import io.particle.android.sdk.utils.Inventory;
-import io.particle.android.sdk.utils.Purchase;
-
 public class IntroActivity extends BaseActivity {
 
     @Override

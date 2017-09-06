@@ -60,11 +60,44 @@ import io.particle.sdk.app.R;
 import static io.particle.android.sdk.utils.Py.list;
 import static io.particle.android.sdk.utils.Py.truthy;
 
+import io.particle.android.sdk.utils.IabBroadcastReceiver;
+import io.particle.android.sdk.utils.IabBroadcastReceiver.IabBroadcastListener;
+import io.particle.android.sdk.utils.IabHelper;
+import io.particle.android.sdk.utils.IabHelper.IabAsyncInProgressException;
+import io.particle.android.sdk.utils.IabResult;
+import io.particle.android.sdk.utils.Inventory;
+import io.particle.android.sdk.utils.Purchase;
+
 
 @ParametersAreNonnullByDefault
 public class DeviceListFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<DevicesLoadResult> {
+        implements LoaderManager.LoaderCallbacks<DevicesLoadResult> {   // TODO: implements IabBroadcastListener
 
+    ///////////////////
+    // START BILLING //
+    ///////////////////
+
+    // Debug tag, for logging
+    static final String TAG = "TrivialDrive";
+
+    // Does the user have the premium upgrade?
+    boolean mIsSubscribed = false;
+
+    // SKU for subscription
+    static final String SKU_SUBSCRIPTION = "monthly";
+
+    // (arbitrary) request code for the purchase flow
+    static final int RC_REQUEST = 10001;
+
+    // The helper object
+    IabHelper mHelper;
+
+    // Provides purchase notification while this app is running
+    IabBroadcastReceiver mBroadcastReceiver;
+
+    /////////////////
+    // END BILLING //
+    /////////////////
 
     public interface Callbacks {
         void onDeviceSelected(ParticleDevice device);
