@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build.VERSION;
@@ -21,6 +22,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,14 +73,14 @@ import io.particle.android.sdk.utils.Purchase;
 
 @ParametersAreNonnullByDefault
 public class DeviceListFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<DevicesLoadResult> {   // TODO: implements IabBroadcastListener
+        implements LoaderManager.LoaderCallbacks<DevicesLoadResult>, IabBroadcastListener {   // TODO: implements IabBroadcastListener
 
     ///////////////////
     // START BILLING //
     ///////////////////
 
     // Debug tag, for logging
-    static final String TAG = "TrivialDrive";
+    static final String TAG = "SimplySmart";
 
     // Does the user have the premium upgrade?
     boolean mIsSubscribed = false;
@@ -194,7 +196,181 @@ public class DeviceListFragment extends Fragment
 
         getLoaderManager().initLoader(R.id.device_list_devices_loader_id, null, this);
         refreshLayout.setRefreshing(true);
+
+        ///////////////////
+        // START BILLING //
+        ///////////////////
+
+        String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgHxhfpotyc1w+zUTXoTfpFiTNKUrD4pTvFi6Xmf5VHOkfQdsK5FHprG1jhZ6DBUhKJdSdk+TrZJEiEvgICB0rlwHfbMhppIS5owC7/qg3mWI7sM6yraxpR7Qhidg8N5kH4XOQgboaY1xEN62snuB9BARYPE9rvR3IeVWRCeWkBn0tjNrEXBhITNZdCyQfqn/3dJ0L/Iw8WFyuc95gsxp5yOvzJZN6w7R8Gwh0n2E1YNZ0eAz7Np2KXgOinYrcDeX9a/WWxMTKN9Y8kFNN7jT8qHptdROLLpxE/3Up9YF2SKS52gCzbb7sc88iH5RnPY9XLX5FIDKlrukw+D7T2IKewIDAQAB";
+
+
+        // Create the helper, passing it our context and the public key to verify signatures with
+        Log.d(TAG, "Creating IAB helper.");
+        mHelper = new IabHelper(getContext(), base64EncodedPublicKey);
+
+        // enable debug logging (for a production application, you should set this to false).
+        mHelper.enableDebugLogging(true);
+
+        // Start setup. This is asynchronous and the specified listener
+        // will be called once setup completes.
+        Log.d(TAG, "Starting setup.");
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                Log.d(TAG, "Setup finished.");
+
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+//                    complain("Problem setting up in-app billing: " + result);
+                    Toaster.s(getContext(), "Problem setting up in-app billing: " + result);
+                    return;
+                }
+
+                // Have we been disposed of in the meantime? If so, quit.
+                if (mHelper == null) return;
+
+                // Important: Dynamically register for broadcast messages about updated purchases.
+                // We register the receiver here instead of as a <receiver> in the Manifest
+                // because we always call getPurchases() at startup, so therefore we can ignore
+                // any broadcasts sent while the app isn't running.
+                // Note: registering this listener in an Activity is a bad idea, but is done here
+                // because this is a SAMPLE. Regardless, the receiver must be registered after
+                // IabHelper is setup, but before first call to getPurchases().
+                mBroadcastReceiver = new IabBroadcastReceiver(DeviceListFragment.this);
+                IntentFilter broadcastFilter = new IntentFilter(IabBroadcastReceiver.ACTION);
+                getActivity().registerReceiver(mBroadcastReceiver, broadcastFilter);
+
+                // IAB is fully set up. Now, let's get an inventory of stuff we own.
+                Log.d(TAG, "Setup successful. Querying inventory.");
+                try {
+                    mHelper.queryInventoryAsync(mGotInventoryListener);
+                } catch (IabAsyncInProgressException e) {
+//                    complain("Error querying inventory. Another async operation in progress.");
+                    Toaster.s(getContext(), "Error querying inventory. Another async operation in progress.");
+                }
+            }
+        });
+
+        /////////////////
+        // END BILLING //
+        /////////////////
     }
+
+    /////////////////////////////
+    // START BILLING FUNCTIONS //
+    /////////////////////////////
+
+    // Listener that's called when we finish querying the items and subscriptions we own
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
+            Log.d(TAG, "Query inventory finished.");
+
+            // Have we been disposed of in the meantime? If so, quit.
+            if (mHelper == null) return;
+
+            // Is it a failure?
+            if (result.isFailure()) {
+//                complain("Failed to query inventory: " + result);
+                Toaster.s(getContext(), "Failed to query inventory: " + result);
+                return;
+            }
+
+            Log.d(TAG, "Query inventory was successful.");
+
+            /*
+             * Check for items we own. Notice that for each purchase, we check
+             * the developer payload to see if it's correct! See
+             * verifyDeveloperPayload().
+             */
+
+            // Do we have the premium upgrade?
+            Purchase subscriptionPurchase = inventory.getPurchase("monthly");
+            mIsSubscribed = (subscriptionPurchase != null && verifyDeveloperPayload(subscriptionPurchase));
+            Log.d(TAG, "User is " + (mIsSubscribed ? "SUBSCRIBED" : "NOT SUBSCRIBED"));
+
+            Log.d(TAG, "Initial inventory query finished; enabling main UI.");
+        }
+    };
+
+    @Override
+    public void receivedBroadcast() {
+        // Received a broadcast notification that the inventory of items has changed
+        Log.d(TAG, "Received broadcast notification. Querying inventory.");
+        try {
+            mHelper.queryInventoryAsync(mGotInventoryListener);
+        } catch (IabAsyncInProgressException e) {
+//            complain("Error querying inventory. Another async operation in progress.");
+            Toaster.s(getContext(), "Error querying inventory. Another async operation in progress.");
+        }
+    }
+
+    /** Verifies the developer payload of a purchase. */
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+
+        /*
+         * TODO: verify that the developer payload of the purchase is correct. It will be
+         * the same one that you sent when initiating the purchase.
+         *
+         * WARNING: Locally generating a random string when starting a purchase and
+         * verifying it here might seem like a good approach, but this will fail in the
+         * case where the user purchases an item on one device and then uses your app on
+         * a different device, because on the other device you will not have access to the
+         * random string you originally generated.
+         *
+         * So a good developer payload has these characteristics:
+         *
+         * 1. If two different users purchase an item, the payload is different between them,
+         *    so that one user's purchase can't be replayed to another user.
+         *
+         * 2. The payload must be such that you can verify it even when the app wasn't the
+         *    one who initiated the purchase flow (so that items purchased by the user on
+         *    one device work on other devices owned by the user).
+         *
+         * Using your own server to store and verify developer payloads across app
+         * installations is recommended.
+         */
+
+        return true;
+    }
+
+    // Callback for when a purchase is finished
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+
+            // if we were disposed of in the meantime, quit.
+            if (mHelper == null) return;
+
+            if (result.isFailure()) {
+//                complain("Error purchasing: " + result);
+                Toaster.s(getContext(), "Error purchasing: " + result);
+//                setWaitScreen(false);
+                return;
+            }
+            if (!verifyDeveloperPayload(purchase)) {
+//                complain("Error purchasing. Authenticity verification failed.");
+                Toaster.s(getContext(), "Error purchasing. Authenticity verification failed.");
+//                setWaitScreen(false);
+                return;
+            }
+
+            Log.d(TAG, "Purchase successful.");
+
+            if (purchase.getSku().equals(SKU_SUBSCRIPTION)) {
+                // bought the premium upgrade!
+                Log.d(TAG, "Purchase is premium upgrade. Congratulating user.");
+//                alert("Thank you for upgrading to premium!");
+                Toaster.s(getContext(), "Thank you for subscribing!");
+                mIsSubscribed = true;
+//                updateUi();
+//                setWaitScreen(false);
+            }
+        }
+    };
+
+    ///////////////////////////
+    // END BILLING FUNCTIONS //
+    ///////////////////////////
 
     @Override
     public void onStart() {
@@ -219,6 +395,17 @@ public class DeviceListFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // very important:
+        if (mBroadcastReceiver != null) {
+            getActivity().unregisterReceiver(mBroadcastReceiver);
+        }
+
+        // very important:
+        Log.d(TAG, "Destroying helper.");
+        if (mHelper != null) {
+            mHelper.disposeWhenFinished();
+            mHelper = null;
+        }
         deviceSetupCompleteReceiver.unregister(getActivity());
     }
 
