@@ -287,6 +287,20 @@ public class DeviceListFragment extends Fragment
             mIsSubscribed = (subscriptionPurchase != null && verifyDeveloperPayload(subscriptionPurchase));
             Log.d(TAG, "User is " + (mIsSubscribed ? "SUBSCRIBED" : "NOT SUBSCRIBED"));
 
+            if (!mIsSubscribed) {
+                        /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
+                String payload = "";
+
+                try {
+                    mHelper.launchPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
+                            mPurchaseFinishedListener, payload);
+                } catch (IabAsyncInProgressException e) {
+                    Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
+                }
+            }
+
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
         }
     };
