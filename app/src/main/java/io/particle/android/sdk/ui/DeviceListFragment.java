@@ -174,7 +174,12 @@ public class DeviceListFragment extends Fragment
         AddFloatingActionButton addPhoton = Ui.findView(view, R.id.action_set_up_a_photon);
 
         addPhoton.setOnClickListener(v -> {
-            addPhotonDevice();
+            if (mIsSubscribed) {
+                addPhotonDevice();
+            }
+            else {
+                Toaster.s(getActivity(), "Please purchase subscription to add a device.");
+            }
             fabMenu.collapse();
         });
 
@@ -288,17 +293,7 @@ public class DeviceListFragment extends Fragment
             Log.d(TAG, "User is " + (mIsSubscribed ? "SUBSCRIBED" : "NOT SUBSCRIBED"));
 
             if (!mIsSubscribed) {
-                        /* TODO: for security, generate your payload here for verification. See the comments on
-         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
-         *        an empty string, but on a production app you should carefully generate this. */
-                String payload = "";
-
-                try {
-                    mHelper.launchPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
-                            mPurchaseFinishedListener, payload);
-                } catch (IabAsyncInProgressException e) {
-                    Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
-                }
+                purchaseSubscription();
             }
 
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
@@ -372,7 +367,7 @@ public class DeviceListFragment extends Fragment
 
             if (purchase.getSku().equals(SKU_SUBSCRIPTION)) {
                 // bought the premium upgrade!
-                Log.d(TAG, "Purchase is premium upgrade. Congratulating user.");
+                Log.d(TAG, "Purchase is monthly subscription. Congratulating user.");
 //                alert("Thank you for upgrading to premium!");
                 Toaster.s(getContext(), "Thank you for subscribing!");
                 mIsSubscribed = true;
@@ -381,6 +376,22 @@ public class DeviceListFragment extends Fragment
             }
         }
     };
+
+    private void purchaseSubscription () {
+        if (!mIsSubscribed) {
+                        /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
+            String payload = "";
+
+            try {
+                mHelper.launchPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
+                        mPurchaseFinishedListener, payload);
+            } catch (IabAsyncInProgressException e) {
+                Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
+            }
+        }
+    }
 
     ///////////////////////////
     // END BILLING FUNCTIONS //
@@ -470,7 +481,13 @@ public class DeviceListFragment extends Fragment
                     .show();
 
         } else if (!device.isRunningTinker()) { // TODO change this to device.isRunningSnapLight()
-            DeviceActionsHelper.takeActionForDevice(R.id.action_device_toggle, getActivity(), device);
+            if (mIsSubscribed) {
+                DeviceActionsHelper.takeActionForDevice(R.id.action_device_toggle, getActivity(), device);
+            }
+            else {
+                Toaster.s(getActivity(), "Please purchase subscription to toggle lights.");
+            }
+
 //            new AlertDialog.Builder(getActivity())
 //                    .setTitle("Device not running Tinker")
 //                    .setMessage("This device is not running Tinker firmware.")
