@@ -179,6 +179,8 @@ public class DeviceListFragment extends Fragment
             }
             else {
                 Toaster.s(getActivity(), "Please purchase subscription to add a device.");
+                mHelper.flagEndAsync();
+                purchaseSubscription();
             }
             fabMenu.collapse();
         });
@@ -385,11 +387,28 @@ public class DeviceListFragment extends Fragment
             String payload = "";
 
             try {
-                mHelper.launchPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
+                mHelper.launchSubscriptionPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
                         mPurchaseFinishedListener, payload);
             } catch (IabAsyncInProgressException e) {
                 Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
             }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+        if (mHelper == null) return;
+
+        // Pass on the activity result to the helper for handling
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            Log.d(TAG, "onActivityResult handled by IABUtil.");
         }
     }
 
@@ -486,6 +505,8 @@ public class DeviceListFragment extends Fragment
             }
             else {
                 Toaster.s(getActivity(), "Please purchase subscription to toggle lights.");
+                mHelper.flagEndAsync();
+                purchaseSubscription();
             }
 
 //            new AlertDialog.Builder(getActivity())
