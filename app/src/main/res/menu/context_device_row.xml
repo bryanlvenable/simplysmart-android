@@ -13,10 +13,6 @@
         android:title="@string/copy_device_id_to_clipboard"/>
 
     <item
-        android:id="@id/action_device_flash_tinker"
-        android:title="Re-flash Tinker"/>
-
-    <item
         android:id="@id/action_device_unclaim"
         android:title="Unclaim"/>
 

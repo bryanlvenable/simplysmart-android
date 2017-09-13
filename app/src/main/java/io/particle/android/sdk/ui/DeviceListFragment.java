@@ -179,8 +179,18 @@ public class DeviceListFragment extends Fragment
             }
             else {
                 Toaster.s(getActivity(), "Please purchase subscription to add a device.");
+                  /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
                 mHelper.flagEndAsync();
-                purchaseSubscription();
+                String payload = "";
+
+                try {
+                    mHelper.launchSubscriptionPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
+                            mPurchaseFinishedListener, payload);
+                } catch (IabAsyncInProgressException e) {
+                    Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
+                }
             }
             fabMenu.collapse();
         });
@@ -295,7 +305,17 @@ public class DeviceListFragment extends Fragment
             Log.d(TAG, "User is " + (mIsSubscribed ? "SUBSCRIBED" : "NOT SUBSCRIBED"));
 
             if (!mIsSubscribed) {
-                purchaseSubscription();
+                        /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
+                String payload = "";
+
+                try {
+                    mHelper.launchSubscriptionPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
+                            mPurchaseFinishedListener, payload);
+                } catch (IabAsyncInProgressException e) {
+                    Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
+                }
             }
 
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
@@ -307,6 +327,7 @@ public class DeviceListFragment extends Fragment
         // Received a broadcast notification that the inventory of items has changed
         Log.d(TAG, "Received broadcast notification. Querying inventory.");
         try {
+            mHelper.flagEndAsync();
             mHelper.queryInventoryAsync(mGotInventoryListener);
         } catch (IabAsyncInProgressException e) {
 //            complain("Error querying inventory. Another async operation in progress.");
@@ -505,10 +526,22 @@ public class DeviceListFragment extends Fragment
             }
             else {
                 Toaster.s(getActivity(), "Please purchase subscription to toggle lights.");
-                mHelper.flagEndAsync();
-                purchaseSubscription();
-                refreshDevices();
-            }
+
+                if (!mIsSubscribed) {
+                        /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
+                    String payload = "";
+                    mHelper.flagEndAsync();
+
+                    try {
+                        mHelper.launchSubscriptionPurchaseFlow(getActivity(), SKU_SUBSCRIPTION, RC_REQUEST,
+                                mPurchaseFinishedListener, payload);
+                    } catch (IabAsyncInProgressException e) {
+                        Toaster.s(getContext(), "Error launching purchase flow. Another async operation in progress.");
+                    }
+                }
+        }
 
 //            new AlertDialog.Builder(getActivity())
 //                    .setTitle("Device not running Tinker")
