@@ -507,6 +507,7 @@ public class DeviceListFragment extends Fragment
                 Toaster.s(getActivity(), "Please purchase subscription to toggle lights.");
                 mHelper.flagEndAsync();
                 purchaseSubscription();
+                refreshDevices();
             }
 
 //            new AlertDialog.Builder(getActivity())
