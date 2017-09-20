@@ -5,4 +5,6 @@
     <string name="uri_docs_create_your_own_android_app">http://docs.particle.io/photon/ios/#ios-cloud-sdk</string>
     <string name="uri_support_community">http://community.particle.io/</string>
     <string name="uri_support_site">http://support.particle.io/hc/en-us</string>
+    <string name="terms_of_service_uri">http://simplysmarttechnologies.com/</string>
+    <string name="privacy_policy_uri">http://simplysmarttechnologies.com/privacy.html</string>
 </resources>
